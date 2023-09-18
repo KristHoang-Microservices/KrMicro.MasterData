@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrMicro.MasterData", "KrMicro.MasterData\KrMicro.MasterData.csproj", "{C6741871-29A5-4929-99E2-F074CF680BA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KrMicro.Core", "KrMicro.Core\KrMicro.Core.csproj", "{DE5DF55E-B3C9-4194-8C8A-1FE20BDA57C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6741871-29A5-4929-99E2-F074CF680BA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6741871-29A5-4929-99E2-F074CF680BA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6741871-29A5-4929-99E2-F074CF680BA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6741871-29A5-4929-99E2-F074CF680BA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE5DF55E-B3C9-4194-8C8A-1FE20BDA57C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE5DF55E-B3C9-4194-8C8A-1FE20BDA57C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE5DF55E-B3C9-4194-8C8A-1FE20BDA57C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE5DF55E-B3C9-4194-8C8A-1FE20BDA57C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
