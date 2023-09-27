@@ -5,14 +5,14 @@ namespace KrMicro.Core.Models.Abstraction;
 
 public abstract class BaseModel
 {
-    [Key] [Column("id")] public short? Id { get; set; }
+    [Key] [Column("Id")] public short? Id { get; set; }
 }
 
 public abstract class BaseModelWithAudit : BaseModel
 {
-    [Column("created_at")] public DateTimeOffset? CreatedAt { get; set; }
+    [Column("CreatedAt")] public DateTimeOffset? CreatedAt { get; set; }
 
-    [Column("updated_at")] public DateTimeOffset? UpdatedAt { get; set; }
+    [Column("UpdatedAt")] public DateTimeOffset? UpdatedAt { get; set; }
 }
 
 public enum Status
@@ -23,14 +23,14 @@ public enum Status
 
 public abstract class BaseModelWithTracking : BaseModel
 {
-    [Column("status")] public Status Status { get; set; }
+    [Column("Status")] public Status Status { get; set; }
 }
 
 public abstract class BaseModelWithAuditAndTracking : BaseModel
 {
-    [Column("created_at")] public DateTimeOffset? CreatedAt { get; set; }
+    [Column("CreatedAt")] public DateTimeOffset? CreatedAt { get; set; }
 
-    [Column("updated_at")] public DateTimeOffset? UpdatedAt { get; set; }
+    [Column("UpdatedAt")] public DateTimeOffset? UpdatedAt { get; set; }
 
-    [Column("status")] public Status? Status { get; set; }
+    [Column("Status")] public Status? Status { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Command.Product;
+namespace KrMicro.MasterData.CQS.Commands.Product;
 
 public record CreateProductCommandRequest(string Name, decimal Price, string? Description, string? BrandName,
     string? CategoryName,

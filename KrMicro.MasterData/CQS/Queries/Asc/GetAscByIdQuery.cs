@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Query.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Query.Asc;
+namespace KrMicro.MasterData.CQS.Queries.Asc;
 
 public record GetAscByIdQueryRequest;
 

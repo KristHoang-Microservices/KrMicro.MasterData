@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Query.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Query.Brand;
+namespace KrMicro.MasterData.CQS.Queries.Brand;
 
 public record GetAllBrandQueryRequest;
 

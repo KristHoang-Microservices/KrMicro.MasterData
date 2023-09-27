@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Command.Brand;
+namespace KrMicro.MasterData.CQS.Commands.Brand;
 
 public record CreateBrandCommandRequest(string Name, string? Description, string? ImageUrl);
 

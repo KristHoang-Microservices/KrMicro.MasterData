@@ -1,7 +1,7 @@
 using KrMicro.Core.Models.Abstraction;
 using KrMicro.MasterData.Constants;
-using KrMicro.MasterData.CQS.Command.Asc;
-using KrMicro.MasterData.CQS.Query.Asc;
+using KrMicro.MasterData.CQS.Commands.Asc;
+using KrMicro.MasterData.CQS.Queries.Asc;
 using KrMicro.MasterData.Models;
 using KrMicro.MasterData.Services;
 using Microsoft.AspNetCore.Mvc;

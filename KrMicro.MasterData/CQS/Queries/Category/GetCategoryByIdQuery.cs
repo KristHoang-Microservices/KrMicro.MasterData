@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Query.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Query.Category;
+namespace KrMicro.MasterData.CQS.Queries.Category;
 
 public record GetCategoryByIdQueryRequest;
 

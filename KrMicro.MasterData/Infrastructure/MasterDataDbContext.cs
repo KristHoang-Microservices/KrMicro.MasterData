@@ -13,14 +13,27 @@ public class MasterDataDbContext : DbContext
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<DeliveryVendor>().Property(c => c.Fee).HasPrecision(18, 2);
+        
+        modelBuilder.Entity<Product>().HasOne<Category>(p => p.Category).WithMany().HasForeignKey(c => c.CategoryId).IsRequired(false);
+        modelBuilder.Entity<Product>().HasOne<Brand>(p => p.Brand).WithMany().HasForeignKey(c => c.BrandId).IsRequired(false);
 
-    public DbSet<Product> Product { get; set; }
+        modelBuilder.Entity<Product>().Navigation(c => c.Brand).AutoInclude();
+        modelBuilder.Entity<Product>().Navigation(c => c.Category).AutoInclude();
+    }
 
-    public DbSet<Asc> Asc { get; set; }
+    public DbSet<Product> Products { get; set; }
 
-    public DbSet<Category> Category { get; set; }
+    public DbSet<Asc> Ascs { get; set; }
 
-    public DbSet<Brand> Brand { get; set; }
+    public DbSet<Category> Categories { get; set; }
+
+    public DbSet<Brand> Brands { get; set; }
+    
+    public DbSet<DeliveryVendor> DeliveryVendors { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {

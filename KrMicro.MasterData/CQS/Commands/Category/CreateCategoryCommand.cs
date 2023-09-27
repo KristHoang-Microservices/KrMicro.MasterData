@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Command.Category;
+namespace KrMicro.MasterData.CQS.Commands.Category;
 
 public record CreateCategoryCommandRequest(string Name);
 

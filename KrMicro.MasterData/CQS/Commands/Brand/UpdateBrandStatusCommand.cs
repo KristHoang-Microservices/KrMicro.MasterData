@@ -1,7 +1,7 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
 using KrMicro.Core.Models.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Command.Brand;
+namespace KrMicro.MasterData.CQS.Commands.Brand;
 
 public record UpdateBrandStatusRequest(Status Status);
 

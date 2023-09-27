@@ -4,6 +4,7 @@ using KrMicro.MasterData.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KrMicro.MasterData.Migrations
 {
     [DbContext(typeof(MasterDataDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230918033918_UpdateName")]
+    partial class UpdateName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,41 +134,6 @@ namespace KrMicro.MasterData.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("KrMicro.MasterData.Models.DeliveryVendor", b =>
-                {
-                    b.Property<short?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short?>("Id"), 1L, 1);
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<decimal>("Fee")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("int")
-                        .HasColumnName("Status");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset")
-                        .HasColumnName("UpdatedAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeliveryVendors");
-                });
-
             modelBuilder.Entity("KrMicro.MasterData.Models.Product", b =>
                 {
                     b.Property<short?>("Id")
@@ -219,9 +186,6 @@ namespace KrMicro.MasterData.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int")
                         .HasColumnName("Status");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
 
                     b.Property<string>("Style")
                         .HasColumnType("nvarchar(max)")

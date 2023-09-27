@@ -1,7 +1,7 @@
 using KrMicro.Core.Models.Abstraction;
 using KrMicro.MasterData.Constants;
-using KrMicro.MasterData.CQS.Command.Product;
-using KrMicro.MasterData.CQS.Query.Product;
+using KrMicro.MasterData.CQS.Commands.Product;
+using KrMicro.MasterData.CQS.Queries.Product;
 using KrMicro.MasterData.Models;
 using KrMicro.MasterData.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +29,7 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<GetAllProductQueryResult>> GetProduct()
     {
-        return new GetAllProductQueryResult(new List<Product>(await _productService.GetAllAsync()));
+        return Ok(new GetAllProductQueryResult(new List<Product>(await _productService.GetAllAsync())));
     }
 
     // GET: api/Product/5
@@ -40,7 +40,7 @@ public class ProductController : ControllerBase
 
         if (item.Id == null) return new BadRequestResult();
 
-        return new GetProductByIdQueryResult(item);
+        return Ok(new GetProductByIdQueryResult(item));
     }
 
     // PATCH: api/Product/5
@@ -91,10 +91,9 @@ public class ProductController : ControllerBase
 
         var result = item;
         if (request.BrandName != null || request.CategoryName != null) result = await _productService.AttackAsync(item);
-        return new UpdateProductCommandResult(result);
+        return Ok(new UpdateProductCommandResult(result));
     }
-
-
+    
     // POST: api/Product
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
@@ -145,7 +144,7 @@ public class ProductController : ControllerBase
         var result = newItem;
         if (request.BrandName != null || request.CategoryName != null)
             result = await _productService.AttackAsync(newItem);
-        return new CreateProductCommandResult(result);
+        return Ok(new CreateProductCommandResult(result));
     }
 
     // POST: api/Product/id
@@ -160,7 +159,21 @@ public class ProductController : ControllerBase
         item.UpdatedAt = DateTimeOffset.UtcNow;
         await _productService.UpdateAsync(item);
 
-        return new UpdateProductStatusCommandResult(NetworkSuccessResponse.UpdateStatusSuccess);
+        return Ok(new UpdateProductStatusCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
+    }
+    
+    [HttpPost("{id}/UpdateStock")]
+    public async Task<ActionResult<UpdateProductStockCommandResult>> UpdateStock(short id,
+        UpdateProductStockRequest request)
+    {
+        var item = await _productService.GetDetailAsync(x => x.Id == id);
+        if (item.Id == null) return BadRequest();
+
+        item.Stock = request.Stock;
+        item.UpdatedAt = DateTimeOffset.UtcNow;
+        await _productService.UpdateAsync(item);
+
+        return Ok(new UpdateProductStockCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
     }
 
     private async Task<bool> ProductExists(short id)

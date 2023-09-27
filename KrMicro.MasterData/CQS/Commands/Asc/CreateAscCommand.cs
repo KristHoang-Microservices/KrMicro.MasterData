@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Command.Asc;
+namespace KrMicro.MasterData.CQS.Commands.Asc;
 
 public record CreateAscCommandRequest(string Name, string Address, string Hotline);
 

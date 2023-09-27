@@ -4,6 +4,7 @@ using KrMicro.MasterData.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KrMicro.MasterData.Migrations
 {
     [DbContext(typeof(MasterDataDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230920040340_Add Delivery")]
+    partial class AddDelivery
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,7 +134,7 @@ namespace KrMicro.MasterData.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("KrMicro.MasterData.Models.DeliveryVendor", b =>
+            modelBuilder.Entity("KrMicro.MasterData.Models.DeliveryOption", b =>
                 {
                     b.Property<short?>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,9 +147,43 @@ namespace KrMicro.MasterData.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("CreatedAt");
 
+                    b.Property<short>("FK_Deliver_Options")
+                        .HasColumnType("smallint");
+
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("Status");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<short>("VendorId")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("DeliveryOptions");
+                });
+
+            modelBuilder.Entity("KrMicro.MasterData.Models.DeliveryVendor", b =>
+                {
+                    b.Property<short?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short?>("Id"), 1L, 1);
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -220,9 +256,6 @@ namespace KrMicro.MasterData.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Status");
 
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
                     b.Property<string>("Style")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("StyleDescription");
@@ -240,6 +273,17 @@ namespace KrMicro.MasterData.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("KrMicro.MasterData.Models.DeliveryOption", b =>
+                {
+                    b.HasOne("KrMicro.MasterData.Models.DeliveryVendor", "Vendor")
+                        .WithMany("DeliveryOptions")
+                        .HasForeignKey("VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vendor");
+                });
+
             modelBuilder.Entity("KrMicro.MasterData.Models.Product", b =>
                 {
                     b.HasOne("KrMicro.MasterData.Models.Brand", "Brand")
@@ -253,6 +297,11 @@ namespace KrMicro.MasterData.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("KrMicro.MasterData.Models.DeliveryVendor", b =>
+                {
+                    b.Navigation("DeliveryOptions");
                 });
 #pragma warning restore 612, 618
         }

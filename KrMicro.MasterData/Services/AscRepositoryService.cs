@@ -14,6 +14,4 @@ public class AscRepositoryService : BaseRepositoryService<Asc, MasterDataDbConte
     public AscRepositoryService(MasterDataDbContext dataContext) : base(dataContext)
     {
     }
-
-    public DbSet<Asc> Ascs { get; set; }
 }

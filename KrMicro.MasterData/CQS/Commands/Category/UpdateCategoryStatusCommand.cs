@@ -1,7 +1,7 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
 using KrMicro.Core.Models.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Command.Category;
+namespace KrMicro.MasterData.CQS.Commands.Category;
 
 public record UpdateCategoryStatusRequest(Status Status);
 

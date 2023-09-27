@@ -14,22 +14,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CQS\Command\Asc\" />
-      <Folder Include="CQS\Command\Brand\" />
-      <Folder Include="CQS\Command\Category\" />
-      <Folder Include="CQS\Command\Product\" />
-      <Folder Include="CQS\Query\Asc\" />
-      <Folder Include="CQS\Query\Brand\" />
-      <Folder Include="CQS\Query\Category\" />
-      <Folder Include="CQS\Query\Product\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\KrMicro.Core\KrMicro.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="EntityFramework" Version="6.4.4" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.22" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.22" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22">
         <PrivateAssets>all</PrivateAssets>

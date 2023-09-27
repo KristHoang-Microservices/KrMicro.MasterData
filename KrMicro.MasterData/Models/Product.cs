@@ -9,26 +9,30 @@ namespace KrMicro.MasterData.Models;
 [Table("Products")]
 public class Product : BaseModelWithAuditAndTracking
 {
-    [Required] [Column("name")] public string Name { get; set; } = string.Empty;
+    [Required] [Column("Name")] public string Name { get; set; } = string.Empty;
 
     [Required]
-    [Column("price")]
+    [Column("Price")]
     [Precision(16, 2)]
     public decimal Price { get; set; }
 
-    [Column("description")] public string? Description { get; set; }
+    [Column("Description")] public string? Description { get; set; }
 
-    [ForeignKey("brand_id")] public virtual Brand? Brand { get; set; }
+    public short? BrandId { get; set; }
+    [ForeignKey("BrandId")] public Brand? Brand { get; set; }
 
-    [ForeignKey("category_id")] public virtual Category? Category { get; set; }
+    public short? CategoryId { get; set; }
+    [ForeignKey("CategoryId")] public Category? Category { get; set; }
+    
+    [Column("ImportFrom")] public string? ImportFrom { get; set; }
 
-    [Column("import_from")] public string? ImportFrom { get; set; }
-
-    [Column("release_year")]
+    [Column("ReleaseYear")]
     [IntegerValidator(MinValue = 1000)]
     public short? ReleaseYear { get; set; }
 
-    [Column("fragrance_description")] public string? FragranceDescription { get; set; }
-    [Column("style_description")] public string? Style { get; set; }
-    [Column("image_urls")] public string? ImageUrls { get; set; }
+    public int Stock { get; set; } = 0;
+
+    [Column("FragranceDescription")] public string? FragranceDescription { get; set; }
+    [Column("StyleDescription")] public string? Style { get; set; }
+    [Column("ImageUrls")] public string? ImageUrls { get; set; }
 }

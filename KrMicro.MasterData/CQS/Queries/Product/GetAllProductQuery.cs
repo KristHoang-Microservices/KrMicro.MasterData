@@ -1,6 +1,6 @@
 ﻿using KrMicro.Core.CQS.Query.Abstraction;
 
-namespace KrMicro.MasterData.CQS.Query.Product;
+namespace KrMicro.MasterData.CQS.Queries.Product;
 
 public record GetAllProductQueryRequest;
 

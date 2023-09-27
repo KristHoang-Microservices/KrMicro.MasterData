@@ -8,13 +8,13 @@ namespace KrMicro.MasterData.Models;
 [Table("Asc")]
 public class Asc : BaseModelWithAuditAndTracking
 {
-    [Required] [Column("name")] public string Name { get; set; } = string.Empty;
+    [Required] [Column("Name")] public string Name { get; set; } = string.Empty;
 
-    [Column("address")]
+    [Column("Address")]
     [StringLength(150)]
     public string? Address { get; set; }
 
-    [Column("hotline")]
+    [Column("Hotline")]
     [RegexStringValidator(@"/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/")]
     public string? Hotline { get; set; }
 }

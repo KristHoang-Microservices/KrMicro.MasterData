@@ -4,6 +4,7 @@ using KrMicro.MasterData.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KrMicro.MasterData.Migrations
 {
     [DbContext(typeof(MasterDataDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230922012951_Add Delivery Reconfig")]
+    partial class AddDeliveryReconfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,9 +221,6 @@ namespace KrMicro.MasterData.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int")
                         .HasColumnName("Status");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
 
                     b.Property<string>("Style")
                         .HasColumnType("nvarchar(max)")
