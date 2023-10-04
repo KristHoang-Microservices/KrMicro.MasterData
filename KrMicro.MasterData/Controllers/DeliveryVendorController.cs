@@ -15,16 +15,11 @@ namespace KrMicro.MasterData.Controllers;
 [Authorize]
 public class DeliveryVendorController : ControllerBase
 {
-    private readonly IBrandService _brandService;
-    private readonly ICategoryService _categoryService;
     private readonly IDeliveryVendorService _deliveryVendorService;
 
-    public DeliveryVendorController(IDeliveryVendorService productService, IBrandService brandService,
-        ICategoryService categoryService)
+    public DeliveryVendorController(IDeliveryVendorService deliveryVendorService)
     {
-        _deliveryVendorService = productService;
-        _brandService = brandService;
-        _categoryService = categoryService;
+        _deliveryVendorService = deliveryVendorService;
     }
 
     // GET: api/DeliveryVendor
@@ -32,7 +27,8 @@ public class DeliveryVendorController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<GetAllDeliveryVendorQueryResult>> GetDeliveryVendor()
     {
-        return new GetAllDeliveryVendorQueryResult(new List<DeliveryVendor>(await _deliveryVendorService.GetAllAsync()));
+        return new GetAllDeliveryVendorQueryResult(
+            new List<DeliveryVendor>(await _deliveryVendorService.GetAllAsync()));
     }
 
     // GET: api/DeliveryVendor/5
@@ -50,6 +46,7 @@ public class DeliveryVendorController : ControllerBase
     // PATCH: api/DeliveryVendor/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateDeliveryVendorCommandResult>> PutDeliveryVendor(short id,
         UpdateDeliveryVendorCommandRequest request)
     {
@@ -60,9 +57,9 @@ public class DeliveryVendorController : ControllerBase
         item.Fee = request.Fee ?? item.Fee;
 
         item = await _deliveryVendorService.UpdateAsync(item);
-        
+
         var result = item;
-        
+
         return Ok(new UpdateDeliveryVendorCommandResult(result));
     }
 
@@ -70,14 +67,16 @@ public class DeliveryVendorController : ControllerBase
     // POST: api/DeliveryVendor
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<CreateDeliveryVendorCommandResult>> CreateDeliveryVendor(CreateDeliveryVendorCommandRequest request)
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<CreateDeliveryVendorCommandResult>> CreateDeliveryVendor(
+        CreateDeliveryVendorCommandRequest request)
     {
         var newItem = new DeliveryVendor
         {
             Name = request.Name,
             Fee = request.Fee,
             CreatedAt = DateTimeOffset.UtcNow,
-            Status = Status.Disable,
+            Status = Status.Disable
         };
 
         newItem = await _deliveryVendorService.InsertAsync(newItem);
@@ -87,6 +86,7 @@ public class DeliveryVendorController : ControllerBase
 
     // POST: api/DeliveryVendor/id
     [HttpPost("{id}/UpdateStatus")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateDeliveryVendorStatusCommandResult>> UpdateStatus(short id,
         UpdateDeliveryVendorStatusRequest request)
     {
@@ -98,7 +98,7 @@ public class DeliveryVendorController : ControllerBase
         await _deliveryVendorService.UpdateAsync(item);
 
         return Ok(new UpdateDeliveryVendorStatusCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
-    } 
+    }
 
     private async Task<bool> DeliveryVendorExists(short id)
     {

@@ -4,6 +4,7 @@ using KrMicro.MasterData.CQS.Commands.Brand;
 using KrMicro.MasterData.CQS.Queries.Brand;
 using KrMicro.MasterData.Models;
 using KrMicro.MasterData.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KrMicro.MasterData.Controllers;
@@ -21,6 +22,7 @@ public class BrandController : ControllerBase
 
     // GET: api/Brand
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<GetAllBrandQueryResult>> GetBrand()
     {
         return new GetAllBrandQueryResult(new List<Brand>(await _brandService.GetAllAsync()));
@@ -28,6 +30,7 @@ public class BrandController : ControllerBase
 
     // GET: api/Brand/5
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<GetBrandByIdQueryResult>> GetBrand(short id)
     {
         var item = await _brandService.GetDetailAsync(item => item.Id == id);
@@ -40,6 +43,7 @@ public class BrandController : ControllerBase
     // PATCH: api/Brand/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateBrandCommandResult>> PatchBrand(short id, UpdateBrandCommandRequest request)
     {
         var item = await _brandService.GetDetailAsync(x => x.Id == id);
@@ -56,6 +60,7 @@ public class BrandController : ControllerBase
     // POST: api/Brand
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CreateBrandCommandResult>> CreateBrand(CreateBrandCommandRequest request)
     {
         var newItem = new Brand
@@ -72,6 +77,7 @@ public class BrandController : ControllerBase
 
     // POST: api/Brand/id
     [HttpPost("{id}/UpdateStatus")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateBrandStatusCommandResult>> UpdateStatus(short id,
         UpdateBrandStatusRequest request)
     {

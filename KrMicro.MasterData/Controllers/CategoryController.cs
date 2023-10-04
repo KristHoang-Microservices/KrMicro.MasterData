@@ -4,6 +4,7 @@ using KrMicro.MasterData.CQS.Commands.Category;
 using KrMicro.MasterData.CQS.Queries.Category;
 using KrMicro.MasterData.Models;
 using KrMicro.MasterData.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KrMicro.MasterData.Controllers;
@@ -22,6 +23,7 @@ public class CategoryController : ControllerBase
 
     // GET: api/Category
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<GetAllCategoryQueryResult>> GetCategory()
     {
         return new GetAllCategoryQueryResult(new List<Category>(await _categoryService.GetAllAsync()));
@@ -29,6 +31,7 @@ public class CategoryController : ControllerBase
 
     // GET: api/Category/5
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<GetCategoryByIdQueryResult>> GetCategory(short id)
     {
         var item = await _categoryService.GetDetailAsync(item => item.Id == id);
@@ -41,6 +44,7 @@ public class CategoryController : ControllerBase
     // PATCH: api/Category/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateCategoryCommandResult>> PutCategory(short id,
         UpdateCategoryCommandRequest request)
     {
@@ -56,6 +60,7 @@ public class CategoryController : ControllerBase
     // POST: api/Category
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CreateCategoryCommandResult>> CreateCategory(CreateCategoryCommandRequest request)
     {
         var newItem = new Category
@@ -70,6 +75,7 @@ public class CategoryController : ControllerBase
 
     // POST: api/Category/id
     [HttpPost("{id}/UpdateStatus")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateCategoryStatusCommandResult>> UpdateStatus(short id,
         UpdateCategoryStatusRequest request)
     {

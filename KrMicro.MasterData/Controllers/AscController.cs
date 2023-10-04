@@ -4,6 +4,7 @@ using KrMicro.MasterData.CQS.Commands.Asc;
 using KrMicro.MasterData.CQS.Queries.Asc;
 using KrMicro.MasterData.Models;
 using KrMicro.MasterData.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KrMicro.MasterData.Controllers;
@@ -21,6 +22,7 @@ public class AscController : ControllerBase
 
     // GET: api/Asc
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<GetAllAscQueryResult>> GetAsc()
     {
         return new GetAllAscQueryResult(new List<Asc>(await _ascService.GetAllAsync()));
@@ -28,6 +30,7 @@ public class AscController : ControllerBase
 
     // GET: api/Asc/5
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<GetAscByIdQueryResult>> GetAsc(short id)
     {
         var item = await _ascService.GetDetailAsync(item => item.Id == id);
@@ -40,6 +43,7 @@ public class AscController : ControllerBase
     // PATCH: api/Asc/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateAscCommandResult>> PatchAsc(short id, UpdateAscCommandRequest request)
     {
         var item = await _ascService.GetDetailAsync(x => x.Id == id);
@@ -56,6 +60,7 @@ public class AscController : ControllerBase
     // POST: api/Asc
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<CreateAscCommandResult> CreateAsc(CreateAscCommandRequest request)
     {
         var newItem = new Asc
@@ -72,6 +77,7 @@ public class AscController : ControllerBase
 
     // POST: api/Asc/id
     [HttpPost("{id}/UpdateStatus")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateAscStatusCommandResult>> UpdateStatus(short id, UpdateAscStatusRequest request)
     {
         var item = await _ascService.GetDetailAsync(x => x.Id == id);

@@ -4,6 +4,7 @@ using KrMicro.MasterData.CQS.Commands.Product;
 using KrMicro.MasterData.CQS.Queries.Product;
 using KrMicro.MasterData.Models;
 using KrMicro.MasterData.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KrMicro.MasterData.Controllers;
@@ -27,13 +28,15 @@ public class ProductController : ControllerBase
 
     // GET: api/Product
     [HttpGet]
-    public async Task<ActionResult<GetAllProductQueryResult>> GetProduct()
+    [AllowAnonymous]
+    public async Task<ActionResult<GetAllProductQueryResult>> GetProducts()
     {
         return Ok(new GetAllProductQueryResult(new List<Product>(await _productService.GetAllAsync())));
     }
 
     // GET: api/Product/5
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<GetProductByIdQueryResult>> GetProduct(short id)
     {
         var item = await _productService.GetDetailAsync(item => item.Id == id);
@@ -46,6 +49,7 @@ public class ProductController : ControllerBase
     // PATCH: api/Product/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPatch("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateProductCommandResult>> PutProduct(short id,
         UpdateProductCommandRequest request)
     {
@@ -93,10 +97,11 @@ public class ProductController : ControllerBase
         if (request.BrandName != null || request.CategoryName != null) result = await _productService.AttackAsync(item);
         return Ok(new UpdateProductCommandResult(result));
     }
-    
+
     // POST: api/Product
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CreateProductCommandResult>> CreateProduct(CreateProductCommandRequest request)
     {
         var newItem = new Product
@@ -149,6 +154,7 @@ public class ProductController : ControllerBase
 
     // POST: api/Product/id
     [HttpPost("{id}/UpdateStatus")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UpdateProductStatusCommandResult>> UpdateStatus(short id,
         UpdateProductStatusRequest request)
     {
@@ -161,7 +167,7 @@ public class ProductController : ControllerBase
 
         return Ok(new UpdateProductStatusCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
     }
-    
+
     [HttpPost("{id}/UpdateStock")]
     public async Task<ActionResult<UpdateProductStockCommandResult>> UpdateStock(short id,
         UpdateProductStockRequest request)
