@@ -44,13 +44,15 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DbSQL");
-builder.Services.AddDbContext<MasterDataDbContext>(opt => opt.UseSqlServer(connectionString),
+var connectionString = builder.Configuration.GetConnectionString("DbNeon");
+builder.Services.AddDbContext<MasterDataDbContext>(opt => opt.UseNpgsql(connectionString),
     ServiceLifetime.Transient);
 
 builder.Services.AddScoped<ICategoryService, CategoryRepositoryService>();
 builder.Services.AddScoped<IBrandService, BrandRepositoryService>();
 builder.Services.AddScoped<IProductService, ProductRepositoryService>();
+builder.Services.AddScoped<IProductSizeService, ProductSizeRepositoryService>();
+builder.Services.AddScoped<ISizeService, SizeRepositoryService>();
 builder.Services.AddScoped<IAscService, AscRepositoryService>();
 
 builder.Services.AddCors(options =>
@@ -86,12 +88,10 @@ builder.Services.AddAuthentication(opt =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
+app.UseCors("AllOrigins");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

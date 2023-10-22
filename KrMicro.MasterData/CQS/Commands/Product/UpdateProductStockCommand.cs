@@ -1,9 +1,8 @@
 ﻿using KrMicro.Core.CQS.Command.Abstraction;
-using KrMicro.Core.Models.Abstraction;
 
 namespace KrMicro.MasterData.CQS.Commands.Product;
 
-public record UpdateProductStockRequest(int Stock);
+public record UpdateProductStockRequest(int Stock, string SizeCode);
 
 public class UpdateProductStockCommandResult : UpdateStatusCommandResult
 {

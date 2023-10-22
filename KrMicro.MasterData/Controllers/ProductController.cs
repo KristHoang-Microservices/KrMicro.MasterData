@@ -17,13 +17,17 @@ public class ProductController : ControllerBase
     private readonly IBrandService _brandService;
     private readonly ICategoryService _categoryService;
     private readonly IProductService _productService;
+    private readonly IProductSizeService _productSizeService;
+    private readonly ISizeService _sizeService;
 
-    public ProductController(IProductService productService, IBrandService brandService,
-        ICategoryService categoryService)
+    public ProductController(IBrandService brandService, ICategoryService categoryService,
+        IProductService productService, ISizeService sizeService, IProductSizeService productSizeService)
     {
-        _productService = productService;
         _brandService = brandService;
         _categoryService = categoryService;
+        _productService = productService;
+        _sizeService = sizeService;
+        _productSizeService = productSizeService;
     }
 
     // GET: api/Product
@@ -57,7 +61,6 @@ public class ProductController : ControllerBase
         if (item.Id == null) return NotFound();
 
         item.Name = request.Name ?? item.Name;
-        item.Price = request.Price ?? item.Price;
         item.Description = request.Description ?? item.Description;
         item.ImportFrom = request.ImportFrom ?? item.ImportFrom;
         item.ReleaseYear = request.ReleaseYear ?? item.ReleaseYear;
@@ -108,7 +111,6 @@ public class ProductController : ControllerBase
         {
             Name = request.Name,
             CreatedAt = DateTimeOffset.UtcNow,
-            Price = request.Price,
             Description = request.Description,
             ImportFrom = request.ImportFrom,
             ReleaseYear = request.ReleaseYear,
@@ -175,9 +177,21 @@ public class ProductController : ControllerBase
         var item = await _productService.GetDetailAsync(x => x.Id == id);
         if (item.Id == null) return BadRequest();
 
-        item.Stock = request.Stock;
+        var size = await _sizeService.GetDetailAsync(x => x.SizeCode == request.SizeCode);
+
+        if (size.Id == null) size = await _sizeService.InsertAsync(new Size { SizeCode = request.SizeCode });
+
+        var productSize = await _productSizeService.GetDetailAsync(x => x.SizeId == size.Id && x.ProductId == id);
+
+        if (productSize.Id == null)
+            productSize = await _productSizeService.InsertAsync(new ProductSize { Product = item, Size = size });
+
         item.UpdatedAt = DateTimeOffset.UtcNow;
+        size.UpdatedAt = DateTimeOffset.UtcNow;
+        productSize.UpdatedAt = DateTimeOffset.UtcNow;
         await _productService.UpdateAsync(item);
+        await _sizeService.UpdateAsync(size);
+        await _productSizeService.UpdateAsync(productSize);
 
         return Ok(new UpdateProductStockCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
     }

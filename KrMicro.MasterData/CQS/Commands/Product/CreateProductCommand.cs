@@ -2,7 +2,7 @@
 
 namespace KrMicro.MasterData.CQS.Commands.Product;
 
-public record CreateProductCommandRequest(string Name, decimal Price, string? Description, string? BrandName,
+public record CreateProductCommandRequest(string Name, string? Description, string? BrandName,
     string? CategoryName,
     string? ImportFrom, short? ReleaseYear, string? FragranceDescription, string? Style, string? ImageUrls);
 

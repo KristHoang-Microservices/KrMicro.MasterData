@@ -34,3 +34,12 @@ public abstract class BaseModelWithAuditAndTracking : BaseModel
 
     [Column("Status")] public Status? Status { get; set; }
 }
+
+public abstract class NoIdWithAuditAndTracking : BaseModel
+{
+    [Column("CreatedAt")] public DateTimeOffset? CreatedAt { get; set; }
+
+    [Column("UpdatedAt")] public DateTimeOffset? UpdatedAt { get; set; }
+
+    [Column("Status")] public Status? Status { get; set; }
+}
