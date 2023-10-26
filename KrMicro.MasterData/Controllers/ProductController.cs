@@ -77,7 +77,8 @@ public class ProductController : ControllerBase
                 brand = await _brandService.InsertAsync(new Brand
                 {
                     Name = request.BrandName,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Status = Status.Available
                 });
 
             item.Brand = brand;
@@ -90,7 +91,8 @@ public class ProductController : ControllerBase
                 category = await _categoryService.InsertAsync(new Category
                 {
                     Name = request.CategoryName,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Status = Status.Available
                 });
 
             item.Category = category;
@@ -116,7 +118,7 @@ public class ProductController : ControllerBase
             ReleaseYear = request.ReleaseYear,
             FragranceDescription = request.FragranceDescription,
             Style = request.Style,
-            Status = Status.Disable,
+            Status = Status.Available,
             ImageUrls = request.ImageUrls
         };
 
@@ -129,7 +131,8 @@ public class ProductController : ControllerBase
                 brand = await _brandService.InsertAsync(new Brand
                 {
                     Name = request.BrandName,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Status = Status.Available
                 });
 
             newItem.Brand = brand;
@@ -142,7 +145,8 @@ public class ProductController : ControllerBase
                 category = await _categoryService.InsertAsync(new Category
                 {
                     Name = request.CategoryName,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Status = Status.Available
                 });
 
             newItem.Category = category;
