@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KrMicro.MasterData.Migrations
 {
     [DbContext(typeof(MasterDataDbContext))]
-    [Migration("20231022032142_Initial")]
+    [Migration("20231030070740_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,10 +242,6 @@ namespace KrMicro.MasterData.Migrations
                     b.Property<short>("ProductId")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("CreatedAt");
-
                     b.Property<short?>("Id")
                         .HasColumnType("smallint")
                         .HasColumnName("Id");
@@ -255,24 +251,13 @@ namespace KrMicro.MasterData.Migrations
                         .HasColumnType("numeric(16,2)")
                         .HasColumnName("Price");
 
-                    b.Property<short>("ProductSizes")
-                        .HasColumnType("smallint");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("Status");
-
                     b.Property<int>("Stock")
                         .HasColumnType("integer")
                         .HasColumnName("Stock");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("UpdatedAt");
-
                     b.HasKey("SizeId", "ProductId");
 
-                    b.HasIndex("ProductSizes");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductSize");
                 });
@@ -327,7 +312,7 @@ namespace KrMicro.MasterData.Migrations
                 {
                     b.HasOne("KrMicro.MasterData.Models.Product", "Product")
                         .WithMany("ProductSizes")
-                        .HasForeignKey("ProductSizes")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

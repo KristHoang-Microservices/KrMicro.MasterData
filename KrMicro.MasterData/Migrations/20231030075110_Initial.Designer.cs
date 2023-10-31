@@ -3,6 +3,7 @@ using System;
 using KrMicro.MasterData.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KrMicro.MasterData.Migrations
 {
     [DbContext(typeof(MasterDataDbContext))]
-    partial class MasterDataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231030075110_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,10 +242,6 @@ namespace KrMicro.MasterData.Migrations
                     b.Property<short>("ProductId")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("CreatedAt");
-
                     b.Property<short?>("Id")
                         .HasColumnType("smallint")
                         .HasColumnName("Id");
@@ -253,17 +251,9 @@ namespace KrMicro.MasterData.Migrations
                         .HasColumnType("numeric(16,2)")
                         .HasColumnName("Price");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("Status");
-
                     b.Property<int>("Stock")
                         .HasColumnType("integer")
                         .HasColumnName("Stock");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("SizeId", "ProductId");
 

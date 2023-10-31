@@ -137,18 +137,14 @@ namespace KrMicro.MasterData.Migrations
                     ProductId = table.Column<short>(type: "smallint", nullable: false),
                     Stock = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric(16,2)", precision: 16, scale: 2, nullable: false),
-                    ProductSizes = table.Column<short>(type: "smallint", nullable: false),
-                    Id = table.Column<short>(type: "smallint", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: true)
+                    Id = table.Column<short>(type: "smallint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductSize", x => new { x.SizeId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_ProductSize_Products_ProductSizes",
-                        column: x => x.ProductSizes,
+                        name: "FK_ProductSize_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -171,9 +167,9 @@ namespace KrMicro.MasterData.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductSize_ProductSizes",
+                name: "IX_ProductSize_ProductId",
                 table: "ProductSize",
-                column: "ProductSizes");
+                column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
