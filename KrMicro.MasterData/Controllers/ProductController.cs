@@ -60,13 +60,13 @@ public class ProductController : ControllerBase
         var item = await _productService.GetDetailAsync(x => x.Id == id);
         if (item == null) return NotFound();
 
-        item.Name = request.Name ?? item.Name;
-        item.Description = request.Description ?? item.Description;
-        item.ImportFrom = request.ImportFrom ?? item.ImportFrom;
+        item.Name = request.Name ?? item.Name.Trim();
+        item.Description = request.Description ?? item.Description?.Trim();
+        item.ImportFrom = request.ImportFrom ?? item.ImportFrom?.Trim();
         item.ReleaseYear = request.ReleaseYear ?? item.ReleaseYear;
-        item.FragranceDescription = request.FragranceDescription ?? item.FragranceDescription;
-        item.Style = request.Style ?? item.Style;
-        item.ImageUrls = request.ImageUrls ?? item.ImageUrls;
+        item.FragranceDescription = request.FragranceDescription ?? item.FragranceDescription?.Trim();
+        item.Style = request.Style ?? item.Style?.Trim();
+        item.ImageUrls = request.ImageUrls ?? item.ImageUrls?.Trim();
 
         item = await _productService.UpdateAsync(item);
 
@@ -75,7 +75,7 @@ public class ProductController : ControllerBase
             var brand = await _brandService.GetDetailAsync(x => x.Name == request.BrandName) ??
                         await _brandService.InsertAsync(new Brand
                         {
-                            Name = request.BrandName,
+                            Name = request.BrandName.Trim(),
                             CreatedAt = DateTimeOffset.UtcNow,
                             Status = Status.Available
                         });
@@ -91,7 +91,7 @@ public class ProductController : ControllerBase
             var category = await _categoryService.GetDetailAsync(x => x.Name == request.CategoryName) ??
                            await _categoryService.InsertAsync(new Category
                            {
-                               Name = request.CategoryName,
+                               Name = request.CategoryName.Trim(),
                                CreatedAt = DateTimeOffset.UtcNow,
                                Status = Status.Available
                            });
@@ -117,13 +117,13 @@ public class ProductController : ControllerBase
         {
             Name = request.Name,
             CreatedAt = DateTimeOffset.UtcNow,
-            Description = request.Description,
-            ImportFrom = request.ImportFrom,
+            Description = request.Description?.Trim(),
+            ImportFrom = request.ImportFrom?.Trim(),
             ReleaseYear = request.ReleaseYear,
-            FragranceDescription = request.FragranceDescription,
-            Style = request.Style,
+            FragranceDescription = request.FragranceDescription?.Trim(),
+            Style = request.Style?.Trim(),
             Status = Status.Available,
-            ImageUrls = request.ImageUrls
+            ImageUrls = request.ImageUrls?.Trim()
         };
 
         newItem = await _productService.InsertAsync(newItem);
@@ -133,7 +133,7 @@ public class ProductController : ControllerBase
             var brand = await _brandService.GetDetailAsync(x => x.Name == request.BrandName) ??
                         await _brandService.InsertAsync(new Brand
                         {
-                            Name = request.BrandName,
+                            Name = request.BrandName.Trim(),
                             CreatedAt = DateTimeOffset.UtcNow,
                             Status = Status.Available
                         });
@@ -146,7 +146,7 @@ public class ProductController : ControllerBase
             var category = await _categoryService.GetDetailAsync(x => x.Name == request.CategoryName) ??
                            await _categoryService.InsertAsync(new Category
                            {
-                               Name = request.CategoryName,
+                               Name = request.CategoryName.Trim(),
                                CreatedAt = DateTimeOffset.UtcNow,
                                Status = Status.Available
                            });
@@ -196,7 +196,7 @@ public class ProductController : ControllerBase
             if (size == null)
                 size = await _sizeService.InsertAsync(new Size
                 {
-                    SizeCode = record.SizeCode, CreatedAt = DateTimeOffset.UtcNow, Status = Status.Available
+                    SizeCode = record.SizeCode.Trim(), CreatedAt = DateTimeOffset.UtcNow, Status = Status.Available
                 });
             else
                 size.UpdatedAt = DateTimeOffset.UtcNow;
