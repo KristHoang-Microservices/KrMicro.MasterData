@@ -45,7 +45,7 @@ public class ProductController : ControllerBase
     {
         var item = await _productService.GetDetailAsync(item => item.Id == id);
 
-        if (item.Id == null) return new BadRequestResult();
+        if (item == null) return new BadRequestResult();
 
         return Ok(new GetProductByIdQueryResult(item));
     }
@@ -54,11 +54,11 @@ public class ProductController : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<UpdateProductCommandResult>> PutProduct(short id,
+    public async Task<ActionResult<UpdateProductCommandResult>> PatchProduct(short id,
         UpdateProductCommandRequest request)
     {
         var item = await _productService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return NotFound();
+        if (item == null) return NotFound();
 
         item.Name = request.Name ?? item.Name;
         item.Description = request.Description ?? item.Description;
@@ -72,30 +72,34 @@ public class ProductController : ControllerBase
 
         if (request.BrandName != null)
         {
-            var brand = await _brandService.GetDetailAsync(x => x.Name == request.BrandName);
-            if (brand.Id == null)
-                brand = await _brandService.InsertAsync(new Brand
-                {
-                    Name = request.BrandName,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    Status = Status.Available
-                });
+            var brand = await _brandService.GetDetailAsync(x => x.Name == request.BrandName) ??
+                        await _brandService.InsertAsync(new Brand
+                        {
+                            Name = request.BrandName,
+                            CreatedAt = DateTimeOffset.UtcNow,
+                            Status = Status.Available
+                        });
 
-            item.Brand = brand;
+            item.Brand = null;
+            item.BrandId = null;
+            await _productService.UpdateAsync(item);
+            item.BrandId = brand.Id;
         }
 
         if (request.CategoryName != null)
         {
-            var category = await _categoryService.GetDetailAsync(x => x.Name == request.CategoryName);
-            if (category.Id == null)
-                category = await _categoryService.InsertAsync(new Category
-                {
-                    Name = request.CategoryName,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    Status = Status.Available
-                });
+            var category = await _categoryService.GetDetailAsync(x => x.Name == request.CategoryName) ??
+                           await _categoryService.InsertAsync(new Category
+                           {
+                               Name = request.CategoryName,
+                               CreatedAt = DateTimeOffset.UtcNow,
+                               Status = Status.Available
+                           });
 
-            item.Category = category;
+            item.Category = null;
+            item.CategoryId = null;
+            await _productService.UpdateAsync(item);
+            item.CategoryId = category.Id;
         }
 
         var result = item;
@@ -126,28 +130,26 @@ public class ProductController : ControllerBase
 
         if (request.BrandName != null)
         {
-            var brand = await _brandService.GetDetailAsync(x => x.Name == request.BrandName);
-            if (brand.Id == null)
-                brand = await _brandService.InsertAsync(new Brand
-                {
-                    Name = request.BrandName,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    Status = Status.Available
-                });
+            var brand = await _brandService.GetDetailAsync(x => x.Name == request.BrandName) ??
+                        await _brandService.InsertAsync(new Brand
+                        {
+                            Name = request.BrandName,
+                            CreatedAt = DateTimeOffset.UtcNow,
+                            Status = Status.Available
+                        });
 
             newItem.Brand = brand;
         }
 
         if (request.CategoryName != null)
         {
-            var category = await _categoryService.GetDetailAsync(x => x.Name == request.CategoryName);
-            if (category.Id == null)
-                category = await _categoryService.InsertAsync(new Category
-                {
-                    Name = request.CategoryName,
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    Status = Status.Available
-                });
+            var category = await _categoryService.GetDetailAsync(x => x.Name == request.CategoryName) ??
+                           await _categoryService.InsertAsync(new Category
+                           {
+                               Name = request.CategoryName,
+                               CreatedAt = DateTimeOffset.UtcNow,
+                               Status = Status.Available
+                           });
 
             newItem.Category = category;
         }
@@ -165,7 +167,7 @@ public class ProductController : ControllerBase
         UpdateProductStatusRequest request)
     {
         var item = await _productService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         item.Status = request.Status;
         item.UpdatedAt = DateTimeOffset.UtcNow;
@@ -179,24 +181,63 @@ public class ProductController : ControllerBase
         UpdateProductStockRequest request)
     {
         var item = await _productService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
+        // await _productService.AttackAsync(item);
 
-        var size = await _sizeService.GetDetailAsync(x => x.SizeCode == request.SizeCode);
+        var delTasks = new List<Task>();
+        foreach (var ps in item.ProductSizes) delTasks.Add(Task.Run(() => _productSizeService.DeleteAsync(ps)));
 
-        if (size.Id == null) size = await _sizeService.InsertAsync(new Size { SizeCode = request.SizeCode });
+        foreach (var t in delTasks)
+            await t;
 
-        var productSize = await _productSizeService.GetDetailAsync(x => x.SizeId == size.Id && x.ProductId == id);
+        foreach (var record in request.productSizes)
+        {
+            var size = await _sizeService.GetDetailAsync(x => x.SizeCode == record.SizeCode);
+            if (size == null)
+                size = await _sizeService.InsertAsync(new Size
+                {
+                    SizeCode = record.SizeCode, CreatedAt = DateTimeOffset.UtcNow, Status = Status.Available
+                });
+            else
+                size.UpdatedAt = DateTimeOffset.UtcNow;
 
-        if (productSize.Id == null)
-            productSize = await _productSizeService.InsertAsync(new ProductSize { Product = item, Size = size });
+            var productSize = await _productSizeService.GetDetailAsync(x => x.SizeId == size.Id && x.ProductId == id);
 
-        item.UpdatedAt = DateTimeOffset.UtcNow;
-        size.UpdatedAt = DateTimeOffset.UtcNow;
-        productSize.UpdatedAt = DateTimeOffset.UtcNow;
+            if (productSize == null)
+            {
+                productSize = await _productSizeService.InsertAsync(new ProductSize
+                {
+                    Stock = record.Stock ?? 0,
+                    Price = record.Price ?? 0,
+                    ProductId = item.Id ?? -1,
+                    SizeId = size.Id ?? -1
+                });
+            }
+            else
+            {
+                productSize.Stock = record.Stock ?? productSize.Stock;
+                productSize.Price = record.Price ?? productSize.Price;
+            }
+
+            await _productSizeService.UpdateAsync(productSize);
+            await _sizeService.UpdateAsync(size);
+        }
+
+        item.ProductSizes = new List<ProductSize>();
+
         await _productService.UpdateAsync(item);
-        await _sizeService.UpdateAsync(size);
-        await _productSizeService.UpdateAsync(productSize);
 
+        return Ok(new UpdateProductStockCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<UpdateProductCommandResult>> DeleteProduct(short id)
+    {
+        var item = await _productService.GetDetailAsync(x => x.Id == id);
+        if (item == null) return BadRequest();
+        item.Status = Status.Deleted;
+
+        await _productService.UpdateAsync(item);
         return Ok(new UpdateProductStockCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
     }
 

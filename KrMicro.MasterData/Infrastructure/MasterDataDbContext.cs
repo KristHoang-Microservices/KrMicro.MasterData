@@ -22,6 +22,8 @@ public class MasterDataDbContext : DbContext
     public DbSet<Brand> Brands { get; set; }
 
     public DbSet<DeliveryVendor> DeliveryVendors { get; set; }
+    public DbSet<Size> Sizes { get; set; }
+    public DbSet<ProductSize> ProductSizes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,11 +34,11 @@ public class MasterDataDbContext : DbContext
             .IsRequired(false);
         modelBuilder.Entity<Product>().HasOne<Brand>(p => p.Brand).WithMany().HasForeignKey(c => c.BrandId)
             .IsRequired(false);
-        modelBuilder.Entity<Product>().HasMany<ProductSize>(p => p.ProductSizes).WithOne(s => s.Product)
-            .HasForeignKey("ProductSizes");
 
         modelBuilder.Entity<ProductSize>().HasOne<Size>(p => p.Size).WithMany(s => s.ProductSizes)
             .HasForeignKey("SizeId").IsRequired();
+        modelBuilder.Entity<ProductSize>().HasOne<Product>(p => p.Product).WithMany(s => s.ProductSizes)
+            .HasForeignKey("ProductId").IsRequired();
 
         modelBuilder.Entity<ProductSize>().HasKey(p => new { p.SizeId, p.ProductId });
 

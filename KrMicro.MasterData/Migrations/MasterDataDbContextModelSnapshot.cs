@@ -240,10 +240,6 @@ namespace KrMicro.MasterData.Migrations
                     b.Property<short>("ProductId")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("CreatedAt");
-
                     b.Property<short?>("Id")
                         .HasColumnType("smallint")
                         .HasColumnName("Id");
@@ -253,17 +249,9 @@ namespace KrMicro.MasterData.Migrations
                         .HasColumnType("numeric(16,2)")
                         .HasColumnName("Price");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("Status");
-
                     b.Property<int>("Stock")
                         .HasColumnType("integer")
                         .HasColumnName("Stock");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("SizeId", "ProductId");
 

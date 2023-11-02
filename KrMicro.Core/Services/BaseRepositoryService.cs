@@ -9,7 +9,7 @@ public interface IBaseService<TBaseEntity> where TBaseEntity : class, new()
     Task<TBaseEntity> AttackAsync(TBaseEntity entity);
     Task<IEnumerable<TBaseEntity>> GetAllAsync();
 
-    Task<TBaseEntity> GetDetailAsync(Expression<Func<TBaseEntity, bool>> predicate);
+    Task<TBaseEntity?> GetDetailAsync(Expression<Func<TBaseEntity, bool>> predicate);
 
     Task<bool> CheckExistsAsync(Expression<Func<TBaseEntity, bool>> predicate);
     Task<TBaseEntity> UpdateAsync(TBaseEntity entity);
@@ -78,15 +78,15 @@ public class BaseRepositoryService<TEntity, TDbContext> : IBaseService<TEntity>
         }
     }
 
-    public Task<bool> DeleteAsync(TEntity entity)
+    public async Task<bool> DeleteAsync(TEntity entity)
     {
         if (entity == null) throw new ArgumentNullException($"{nameof(DeleteAsync)} entity must not be null");
 
         try
         {
             DataContext.Remove(entity);
-
-            return Task.FromResult(true);
+            await DataContext.SaveChangesAsync();
+            return true;
         }
         catch (Exception ex)
         {
@@ -108,15 +108,15 @@ public class BaseRepositoryService<TEntity, TDbContext> : IBaseService<TEntity>
         }
     }
 
-    public async Task<TEntity> GetDetailAsync(Expression<Func<TEntity, bool>> predicate)
+    public async Task<TEntity?> GetDetailAsync(Expression<Func<TEntity, bool>> predicate)
     {
         try
         {
-            var result = await DataContext.Set<TEntity>()
+            var  result = await DataContext.Set<TEntity>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(predicate);
 
-            return result ?? new TEntity();
+            return result ?? null;
         }
         catch (Exception ex)
         {

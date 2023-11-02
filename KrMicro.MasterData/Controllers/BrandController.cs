@@ -35,7 +35,7 @@ public class BrandController : ControllerBase
     {
         var item = await _brandService.GetDetailAsync(item => item.Id == id);
 
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         return new GetBrandByIdQueryResult(item);
     }
@@ -47,7 +47,7 @@ public class BrandController : ControllerBase
     public async Task<ActionResult<UpdateBrandCommandResult>> PatchBrand(short id, UpdateBrandCommandRequest request)
     {
         var item = await _brandService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
         item.Name = request.Name ?? item.Name;
         item.Description = request.Description ?? item.Description;
         item.ImageUrl = request.ImageUrl ?? item.ImageUrl;
@@ -69,7 +69,7 @@ public class BrandController : ControllerBase
             Description = request.Description,
             CreatedAt = DateTimeOffset.UtcNow,
             ImageUrl = request.ImageUrl,
-            Status = Status.Disable
+            Status = Status.Available
         };
         var result = await _brandService.InsertAsync(newItem);
         return new CreateBrandCommandResult(result);
@@ -82,7 +82,7 @@ public class BrandController : ControllerBase
         UpdateBrandStatusRequest request)
     {
         var item = await _brandService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
         item.Status = request.Status;
         item.UpdatedAt = DateTimeOffset.UtcNow;
         await _brandService.UpdateAsync(item);

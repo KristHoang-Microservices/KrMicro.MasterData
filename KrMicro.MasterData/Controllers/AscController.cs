@@ -35,7 +35,7 @@ public class AscController : ControllerBase
     {
         var item = await _ascService.GetDetailAsync(item => item.Id == id);
 
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         return new GetAscByIdQueryResult(item);
     }
@@ -47,7 +47,7 @@ public class AscController : ControllerBase
     public async Task<ActionResult<UpdateAscCommandResult>> PatchAsc(short id, UpdateAscCommandRequest request)
     {
         var item = await _ascService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
         item.Name = request.Name ?? item.Name;
         item.Hotline = request.Hotline ?? item.Hotline;
         item.Address = request.Address ?? item.Address;
@@ -81,7 +81,7 @@ public class AscController : ControllerBase
     public async Task<ActionResult<UpdateAscStatusCommandResult>> UpdateStatus(short id, UpdateAscStatusRequest request)
     {
         var item = await _ascService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         item.Status = request.Status;
         item.UpdatedAt = DateTimeOffset.UtcNow;

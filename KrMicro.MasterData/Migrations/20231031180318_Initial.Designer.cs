@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KrMicro.MasterData.Migrations
 {
     [DbContext(typeof(MasterDataDbContext))]
-    [Migration("20231030070740_Initial")]
+    [Migration("20231031180318_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

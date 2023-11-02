@@ -13,10 +13,10 @@ public class Product : BaseModelWithAuditAndTracking
     [Column("Description")] public string? Description { get; set; }
 
     public short? BrandId { get; set; }
-    [ForeignKey("BrandId")] public Brand? Brand { get; set; }
+    public Brand? Brand { get; set; }
 
     public short? CategoryId { get; set; }
-    [ForeignKey("CategoryId")] public Category? Category { get; set; }
+    public Category? Category { get; set; }
 
     [Column("ImportFrom")] public string? ImportFrom { get; set; }
 

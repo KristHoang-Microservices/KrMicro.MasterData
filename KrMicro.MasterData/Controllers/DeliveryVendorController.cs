@@ -38,7 +38,7 @@ public class DeliveryVendorController : ControllerBase
     {
         var item = await _deliveryVendorService.GetDetailAsync(item => item.Id == id);
 
-        if (item.Id == null) return new BadRequestResult();
+        if (item == null) return new BadRequestResult();
 
         return new GetDeliveryVendorByIdQueryResult(item);
     }
@@ -51,7 +51,7 @@ public class DeliveryVendorController : ControllerBase
         UpdateDeliveryVendorCommandRequest request)
     {
         var item = await _deliveryVendorService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         item.Name = request.Name ?? item.Name;
         item.Fee = request.Fee ?? item.Fee;
@@ -91,7 +91,7 @@ public class DeliveryVendorController : ControllerBase
         UpdateDeliveryVendorStatusRequest request)
     {
         var item = await _deliveryVendorService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         item.Status = request.Status;
         item.UpdatedAt = DateTimeOffset.UtcNow;

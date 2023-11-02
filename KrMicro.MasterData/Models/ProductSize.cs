@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace KrMicro.MasterData.Models;
 
 [Table("ProductSize")]
-public class ProductSize : NoIdWithAuditAndTracking
+public class ProductSize : BaseModel
 {
     [ForeignKey("SizeId")] public short SizeId { get; set; }
     [ForeignKey("ProductId")] public short ProductId { get; set; }
+
     [Column("Stock")] public int Stock { get; set; }
 
     [Required]

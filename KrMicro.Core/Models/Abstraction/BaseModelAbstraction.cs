@@ -18,7 +18,8 @@ public abstract class BaseModelWithAudit : BaseModel
 public enum Status
 {
     Available = 1,
-    Disable = 0
+    Disable = 0,
+    Deleted = 2
 }
 
 public abstract class BaseModelWithTracking : BaseModel

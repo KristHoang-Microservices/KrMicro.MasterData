@@ -36,7 +36,7 @@ public class CategoryController : ControllerBase
     {
         var item = await _categoryService.GetDetailAsync(item => item.Id == id);
 
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         return new GetCategoryByIdQueryResult(item);
     }
@@ -49,7 +49,7 @@ public class CategoryController : ControllerBase
         UpdateCategoryCommandRequest request)
     {
         var item = await _categoryService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
         item.Name = request.Name ?? item.Name;
         item.UpdatedAt = DateTimeOffset.UtcNow;
         var result = await _categoryService.UpdateAsync(item);
@@ -80,7 +80,7 @@ public class CategoryController : ControllerBase
         UpdateCategoryStatusRequest request)
     {
         var item = await _categoryService.GetDetailAsync(x => x.Id == id);
-        if (item.Id == null) return BadRequest();
+        if (item == null) return BadRequest();
 
         item.Status = request.Status;
         item.UpdatedAt = DateTimeOffset.UtcNow;
