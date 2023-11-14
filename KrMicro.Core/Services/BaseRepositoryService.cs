@@ -6,8 +6,9 @@ namespace KrMicro.Core.Services;
 public interface IBaseService<TBaseEntity> where TBaseEntity : class, new()
 {
     Task<TBaseEntity> InsertAsync(TBaseEntity entity);
-    Task<TBaseEntity> AttackAsync(TBaseEntity entity);
+    Task<TBaseEntity> AttachAsync(TBaseEntity entity);
     Task<IEnumerable<TBaseEntity>> GetAllAsync();
+    Task<IEnumerable<TBaseEntity>> GetAllWithFilterAsync(Expression<Func<TBaseEntity, bool>> predicate);
 
     Task<TBaseEntity?> GetDetailAsync(Expression<Func<TBaseEntity, bool>> predicate);
 
@@ -43,7 +44,7 @@ public class BaseRepositoryService<TEntity, TDbContext> : IBaseService<TEntity>
         }
     }
 
-    public async Task<TEntity> AttackAsync(TEntity entity)
+    public async Task<TEntity> AttachAsync(TEntity entity)
     {
         if (entity == null) throw new ArgumentNullException($"{nameof(UpdateAsync)} entity must not be null");
 
@@ -108,11 +109,25 @@ public class BaseRepositoryService<TEntity, TDbContext> : IBaseService<TEntity>
         }
     }
 
+    public async Task<IEnumerable<TEntity>> GetAllWithFilterAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        try
+        {
+            return await DataContext.Set<TEntity>()
+                .AsNoTracking().Where(predicate)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Couldn't retrieve entities: {ex.Message}");
+        }
+    }
+
     public async Task<TEntity?> GetDetailAsync(Expression<Func<TEntity, bool>> predicate)
     {
         try
         {
-            var  result = await DataContext.Set<TEntity>()
+            var result = await DataContext.Set<TEntity>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(predicate);
 

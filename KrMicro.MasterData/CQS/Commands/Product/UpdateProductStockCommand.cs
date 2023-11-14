@@ -4,6 +4,8 @@ namespace KrMicro.MasterData.CQS.Commands.Product;
 
 public record StockRecord(int? Stock, string SizeCode, decimal? Price);
 
+public record UpdateProductStockSingleRequest(int Stock);
+
 public record UpdateProductStockRequest(List<StockRecord> productSizes);
 
 public class UpdateProductStockCommandResult : UpdateStatusCommandResult

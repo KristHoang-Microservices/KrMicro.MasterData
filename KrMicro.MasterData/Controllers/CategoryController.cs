@@ -24,9 +24,18 @@ public class CategoryController : ControllerBase
     // GET: api/Category
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<GetAllCategoryQueryResult>> GetCategory()
+    public async Task<ActionResult<GetAllCategoryQueryResult>> GetCategories()
     {
         return new GetAllCategoryQueryResult(new List<Category>(await _categoryService.GetAllAsync()));
+    }
+
+    // GET: api/Category/Web
+    [HttpGet("Web")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetAllCategoryQueryResult>> GetCategoriesWeb()
+    {
+        return new GetAllCategoryQueryResult(
+            new List<Category>(await _categoryService.GetAllAsync()).FindAll(c => c.Status == Status.Available));
     }
 
     // GET: api/Category/5

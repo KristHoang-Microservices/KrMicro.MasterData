@@ -38,6 +38,25 @@ public class ProductController : ControllerBase
         return Ok(new GetAllProductQueryResult(new List<Product>(await _productService.GetAllAsync())));
     }
 
+    // GET: api/Product
+    [HttpGet("Ids")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetProductsByIds>> GetProductsByIds([FromQuery] GetProductsByIdsQueryRequest request)
+    {
+        return Ok(new GetProductsByIds(
+            new List<Product>(
+                await _productService.GetAllWithFilterAsync(x => request.ids.ToList().Contains(x.Id ?? -1)))));
+    }
+
+    // GET: api/Product/Web
+    [HttpGet("Web")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetAllProductQueryResult>> GetProductsWeb()
+    {
+        return Ok(new GetAllProductQueryResult(
+            new List<Product>(await _productService.GetAllAsync()).FindAll(p => p.Status == Status.Available)));
+    }
+
     // GET: api/Product/5
     [HttpGet("{id}")]
     [AllowAnonymous]
@@ -48,6 +67,25 @@ public class ProductController : ControllerBase
         if (item == null) return new BadRequestResult();
 
         return Ok(new GetProductByIdQueryResult(item));
+    }
+
+    // GET: api/Product/5?sizeCode=100ml
+    [HttpGet("{id}/{sizeCode}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetProductSizeQuery>> GetProductSize(short id, string sizeCode)
+    {
+        var item = await _productSizeService.GetDetailAsync(item =>
+            item.ProductId == id && item.Size.SizeCode == sizeCode);
+
+        if (item == null) return new BadRequestResult();
+
+        return Ok(new GetProductSizeQuery(new ProductSizeResult
+        {
+            SizeId = item.SizeId,
+            ProductId = item.ProductId,
+            Stock = item.Stock,
+            Price = item.Price
+        }, true));
     }
 
     // PATCH: api/Product/5
@@ -103,7 +141,7 @@ public class ProductController : ControllerBase
         }
 
         var result = item;
-        if (request.BrandName != null || request.CategoryName != null) result = await _productService.AttackAsync(item);
+        if (request.BrandName != null || request.CategoryName != null) result = await _productService.AttachAsync(item);
         return Ok(new UpdateProductCommandResult(result));
     }
 
@@ -156,7 +194,7 @@ public class ProductController : ControllerBase
 
         var result = newItem;
         if (request.BrandName != null || request.CategoryName != null)
-            result = await _productService.AttackAsync(newItem);
+            result = await _productService.AttachAsync(newItem);
         return Ok(new CreateProductCommandResult(result));
     }
 
@@ -182,7 +220,7 @@ public class ProductController : ControllerBase
     {
         var item = await _productService.GetDetailAsync(x => x.Id == id);
         if (item == null) return BadRequest();
-        // await _productService.AttackAsync(item);
+        // await _productService.AttachAsync(item);
 
         var delTasks = new List<Task>();
         foreach (var ps in item.ProductSizes) delTasks.Add(Task.Run(() => _productSizeService.DeleteAsync(ps)));
@@ -226,6 +264,33 @@ public class ProductController : ControllerBase
         item.ProductSizes = new List<ProductSize>();
 
         await _productService.UpdateAsync(item);
+
+        return Ok(new UpdateProductStockCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
+    }
+
+    [HttpPost("{id}/{sizeCode}/UpdateStockSingle")]
+    public async Task<ActionResult> UpdateStockWithCode(short id, string sizeCode,
+        UpdateProductStockSingleRequest request)
+    {
+        try
+        {
+            var item = await _productService.GetDetailAsync(x => x.Id == id);
+            if (item == null) return BadRequest();
+
+            var size = await _sizeService.GetDetailAsync(x => x.SizeCode == sizeCode);
+            var productSize =
+                await _productSizeService.GetDetailAsync(x => x.ProductId == id && x.SizeId == (size!.Id ?? -1));
+
+            if (productSize != null)
+            {
+                productSize.Stock = request.Stock;
+                await _productSizeService.UpdateAsync(productSize);
+            }
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new UpdateProductStockCommandResult(e.Message, false));
+        }
 
         return Ok(new UpdateProductStockCommandResult(NetworkSuccessResponse.UpdateStatusSuccess));
     }

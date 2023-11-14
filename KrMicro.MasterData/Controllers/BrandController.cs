@@ -22,10 +22,19 @@ public class BrandController : ControllerBase
 
     // GET: api/Brand
     [HttpGet]
-    [AllowAnonymous]
-    public async Task<ActionResult<GetAllBrandQueryResult>> GetBrand()
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<ActionResult<GetAllBrandQueryResult>> GetBrands()
     {
         return new GetAllBrandQueryResult(new List<Brand>(await _brandService.GetAllAsync()));
+    }
+
+    // GET: api/Brand
+    [HttpGet("Web")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetAllBrandQueryResult>> GetBrandsWeb()
+    {
+        return new GetAllBrandQueryResult(
+            new List<Brand>(await _brandService.GetAllAsync()).FindAll(b => b.Status == Status.Available));
     }
 
     // GET: api/Brand/5
