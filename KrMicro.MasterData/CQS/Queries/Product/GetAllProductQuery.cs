@@ -2,7 +2,7 @@
 
 namespace KrMicro.MasterData.CQS.Queries.Product;
 
-public record GetAllProductQueryRequest;
+public record GetAllProductQueryRequest(short? CategoryId, short? BrandId);
 
 public class GetAllProductQueryResult : GetAllQueryResult<Models.Product>
 {

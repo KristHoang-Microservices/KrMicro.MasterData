@@ -34,6 +34,7 @@ public class MasterDataDbContext : DbContext
             .IsRequired(false);
         modelBuilder.Entity<Product>().HasOne<Brand>(p => p.Brand).WithMany().HasForeignKey(c => c.BrandId)
             .IsRequired(false);
+        modelBuilder.Entity<Product>().HasMany<Category>(p => p.OtherCategories).WithMany(c => c.Products);
 
         modelBuilder.Entity<ProductSize>().HasOne<Size>(p => p.Size).WithMany(s => s.ProductSizes)
             .HasForeignKey("SizeId").IsRequired();
@@ -48,6 +49,7 @@ public class MasterDataDbContext : DbContext
         modelBuilder.Entity<Product>().Navigation(c => c.Brand).AutoInclude();
         modelBuilder.Entity<Product>().Navigation(c => c.Category).AutoInclude();
         modelBuilder.Entity<Product>().Navigation(c => c.ProductSizes).AutoInclude();
+        modelBuilder.Entity<Product>().Navigation(c => c.OtherCategories).AutoInclude();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)

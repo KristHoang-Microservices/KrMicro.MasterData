@@ -54,6 +54,7 @@ builder.Services.AddScoped<IProductService, ProductRepositoryService>();
 builder.Services.AddScoped<IProductSizeService, ProductSizeRepositoryService>();
 builder.Services.AddScoped<ISizeService, SizeRepositoryService>();
 builder.Services.AddScoped<IAscService, AscRepositoryService>();
+builder.Services.AddScoped<IDeliveryVendorService, DeliveryVendorRepositoryService>();
 
 builder.Services.AddCors(options =>
 {

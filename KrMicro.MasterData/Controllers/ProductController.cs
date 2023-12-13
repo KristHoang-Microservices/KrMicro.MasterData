@@ -33,9 +33,16 @@ public class ProductController : ControllerBase
     // GET: api/Product
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<GetAllProductQueryResult>> GetProducts()
+    public async Task<ActionResult<GetAllProductQueryResult>> GetProducts(
+        [FromQuery] GetAllProductQueryRequest queryRequest)
     {
-        return Ok(new GetAllProductQueryResult(new List<Product>(await _productService.GetAllAsync())));
+        var filter = new ProductQueryFilter(queryRequest);
+
+        var list =
+            new List<Product>(await _productService.GetAllAsync());
+
+        list = list.FindAll(p => filter.Validate(p));
+        return Ok(new GetAllProductQueryResult(list));
     }
 
     // GET: api/Product
@@ -63,6 +70,21 @@ public class ProductController : ControllerBase
     public async Task<ActionResult<GetProductByIdQueryResult>> GetProduct(short id)
     {
         var item = await _productService.GetDetailAsync(item => item.Id == id);
+
+        if (item == null) return new BadRequestResult();
+
+        return Ok(new GetProductByIdQueryResult(item));
+    }
+
+    // GET: api/Product/Category/{categoryId}
+    [HttpGet("/Category/{categoryId}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetProductByIdQueryResult>> GetProductCategoryById(short categoryId)
+    {
+        var category = await _categoryService.GetDetailAsync(c => c.Id == categoryId);
+        if (category == null) return BadRequest("Không tìm thấy Danh mục");
+        var item = await _productService.GetDetailAsync(item =>
+            item.CategoryId == categoryId || item.OtherCategories.Contains(category));
 
         if (item == null) return new BadRequestResult();
 

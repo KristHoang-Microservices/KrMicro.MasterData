@@ -14,9 +14,10 @@ public class Product : BaseModelWithAuditAndTracking
 
     public short? BrandId { get; set; }
     public Brand? Brand { get; set; }
-
     public short? CategoryId { get; set; }
     public Category? Category { get; set; }
+
+    public List<Category> OtherCategories { get; set; } = new();
 
     [Column("ImportFrom")] public string? ImportFrom { get; set; }
 

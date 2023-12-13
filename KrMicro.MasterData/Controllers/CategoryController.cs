@@ -38,15 +38,22 @@ public class CategoryController : ControllerBase
             new List<Category>(await _categoryService.GetAllAsync()).FindAll(c => c.Status == Status.Available));
     }
 
+    // GET: api/Category/Menu
+    [HttpGet("Menu")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetAllCategoryQueryResult>> GetCategoriesMenu()
+    {
+        return new GetAllCategoryQueryResult(
+            new List<Category>(await _categoryService.GetAllAsync()).FindAll(c => c.IsMenu));
+    }
+
     // GET: api/Category/5
     [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<ActionResult<GetCategoryByIdQueryResult>> GetCategory(short id)
     {
         var item = await _categoryService.GetDetailAsync(item => item.Id == id);
-
         if (item == null) return BadRequest();
-
         return new GetCategoryByIdQueryResult(item);
     }
 
